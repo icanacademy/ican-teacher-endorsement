@@ -39,7 +39,7 @@ export default function EndorsementForm({ endorsement, onSave, onCancel }) {
   });
 
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedPlan, setGeneratedPlan] = useState(null);
+  const [generatedPlan, setGeneratedPlan] = useState(endorsement?.aiSummary || null);
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
@@ -305,7 +305,6 @@ export default function EndorsementForm({ endorsement, onSave, onCancel }) {
               value={formData.date}
               onChange={handleChange}
               required
-              disabled={endorsement?.finalized}
             />
           </div>
 
@@ -318,7 +317,6 @@ export default function EndorsementForm({ endorsement, onSave, onCancel }) {
                 value={formData.timeFrom}
                 onChange={handleChange}
                 required
-                disabled={endorsement?.finalized}
               >
                 <option value="">From</option>
                 {TIME_OPTIONS.map((time) => (
@@ -334,7 +332,6 @@ export default function EndorsementForm({ endorsement, onSave, onCancel }) {
                 value={formData.timeTo}
                 onChange={handleChange}
                 required
-                disabled={endorsement?.finalized}
               >
                 <option value="">To</option>
                 {TIME_OPTIONS.map((time) => (
@@ -361,7 +358,6 @@ export default function EndorsementForm({ endorsement, onSave, onCancel }) {
               value={formData.studentName}
               onChange={handleChange}
               required
-              disabled={endorsement?.finalized}
             >
               <option value="">Select student</option>
               {students.map((student) => (
@@ -380,7 +376,6 @@ export default function EndorsementForm({ endorsement, onSave, onCancel }) {
               value={formData.classType}
               onChange={handleChange}
               required
-              disabled={endorsement?.finalized}
             >
               <option value="">Select class type</option>
               {subjects.map((subject) => (
@@ -402,7 +397,6 @@ export default function EndorsementForm({ endorsement, onSave, onCancel }) {
             onChange={handleChange}
             placeholder="e.g., Charlotte's Web, Grammar Level 2"
             required
-            disabled={endorsement?.finalized}
           />
         </div>
 
@@ -416,7 +410,6 @@ export default function EndorsementForm({ endorsement, onSave, onCancel }) {
             rows={2}
             placeholder="What was covered in the previous lesson?"
             required
-            disabled={endorsement?.finalized}
           />
         </div>
 
@@ -430,7 +423,6 @@ export default function EndorsementForm({ endorsement, onSave, onCancel }) {
             rows={2}
             placeholder="What should the substitute teach today?"
             required
-            disabled={endorsement?.finalized}
           />
         </div>
 
@@ -443,7 +435,6 @@ export default function EndorsementForm({ endorsement, onSave, onCancel }) {
             onChange={handleChange}
             rows={2}
             placeholder="Homework to assign"
-            disabled={endorsement?.finalized}
           />
         </div>
 
@@ -456,7 +447,6 @@ export default function EndorsementForm({ endorsement, onSave, onCancel }) {
             onChange={handleChange}
             rows={2}
             placeholder="Any special instructions or notes for the substitute"
-            disabled={endorsement?.finalized}
           />
         </div>
       </div>
@@ -466,7 +456,7 @@ export default function EndorsementForm({ endorsement, onSave, onCancel }) {
           type="button"
           className="generate-btn"
           onClick={handleGeneratePlan}
-          disabled={isGenerating || endorsement?.finalized}
+          disabled={isGenerating}
         >
           {isGenerating ? 'Generating Lesson Plan...' : 'Generate Lesson Plan with AI'}
         </button>
@@ -497,21 +487,17 @@ export default function EndorsementForm({ endorsement, onSave, onCancel }) {
             Cancel
           </button>
         )}
-        {!endorsement?.finalized && (
-          <>
-            <button type="submit" className="save-btn" disabled={syncing}>
-              {isEditing ? 'Update Draft' : 'Save Draft'}
-            </button>
-            <button
-              type="button"
-              className="finalize-btn"
-              onClick={(e) => handleSubmit(e, true)}
-              disabled={syncing || !generatedPlan}
-            >
-              Finalize & Save
-            </button>
-          </>
-        )}
+        <button type="submit" className="save-btn" disabled={syncing}>
+          {isEditing ? 'Update Draft' : 'Save Draft'}
+        </button>
+        <button
+          type="button"
+          className="finalize-btn"
+          onClick={(e) => handleSubmit(e, true)}
+          disabled={syncing || !generatedPlan}
+        >
+          {isEditing ? 'Update & Finalize' : 'Finalize & Save'}
+        </button>
       </div>
     </form>
   );

@@ -27,11 +27,9 @@ export default function EndorsementCard({ endorsement, onClick, showActions, onE
 
       {showActions && (
         <div className="card-actions" onClick={(e) => e.stopPropagation()}>
-          {!endorsement.finalized && (
-            <button className="edit-btn" onClick={() => onEdit(endorsement)}>
-              Edit
-            </button>
-          )}
+          <button className="edit-btn" onClick={() => onEdit(endorsement)}>
+            Edit
+          </button>
           <button className="delete-btn" onClick={() => onDelete(endorsement.id)}>
             Delete
           </button>

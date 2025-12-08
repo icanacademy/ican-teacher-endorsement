@@ -179,12 +179,24 @@ export function EndorsementProvider({ children }) {
   const getEndorsementsByTeacher = useCallback((teacherId) => {
     // Match by teacher ID, teacher name, or nickname (since Notion may store any of these)
     const teacher = teachers.find((t) => t.id === teacherId);
-    return endorsements.filter(
-      (e) => e.absentTeacherId === teacherId ||
-             e.absentTeacherName === teacher?.name ||
-             e.absentTeacherName === teacher?.nickname ||
-             e.absentTeacherName === teacher?.firstName
-    );
+    if (!teacher) return [];
+
+    // Normalize for case-insensitive comparison
+    const normalize = (str) => (str || '').toLowerCase().trim();
+    const teacherName = normalize(teacher.name);
+    const teacherNickname = normalize(teacher.nickname);
+    const teacherFirstName = normalize(teacher.firstName);
+
+    return endorsements.filter((e) => {
+      const endorserName = normalize(e.absentTeacherName);
+      return e.absentTeacherId === teacherId ||
+             endorserName === teacherName ||
+             endorserName === teacherNickname ||
+             endorserName === teacherFirstName ||
+             // Also check if endorser name contains any of teacher identifiers
+             (teacherNickname && endorserName.includes(teacherNickname)) ||
+             (teacherFirstName && endorserName.includes(teacherFirstName));
+    });
   }, [endorsements, teachers]);
 
   // Get endorsement by ID
@@ -195,17 +207,23 @@ export function EndorsementProvider({ children }) {
   // Check if a time slot is already taken
   const isTimeSlotTaken = useCallback((date, timeSlot, teacherId, excludeId = null) => {
     const teacher = teachers.find((t) => t.id === teacherId);
-    return endorsements.some(
-      (e) =>
-        e.date === date &&
-        e.timeSlot === timeSlot &&
-        (e.absentTeacherId === teacherId ||
-         e.absentTeacherName === teacher?.name ||
-         e.absentTeacherName === teacher?.nickname ||
-         e.absentTeacherName === teacher?.firstName) &&
-        e.id !== excludeId &&
-        e.notionId !== excludeId
-    );
+    if (!teacher) return false;
+
+    const normalize = (str) => (str || '').toLowerCase().trim();
+    const teacherName = normalize(teacher.name);
+    const teacherNickname = normalize(teacher.nickname);
+    const teacherFirstName = normalize(teacher.firstName);
+
+    return endorsements.some((e) => {
+      if (e.date !== date || e.timeSlot !== timeSlot) return false;
+      if (e.id === excludeId || e.notionId === excludeId) return false;
+
+      const endorserName = normalize(e.absentTeacherName);
+      return e.absentTeacherId === teacherId ||
+             endorserName === teacherName ||
+             endorserName === teacherNickname ||
+             endorserName === teacherFirstName;
+    });
   }, [endorsements, teachers]);
 
   // Login user

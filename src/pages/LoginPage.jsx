@@ -13,7 +13,9 @@ export default function LoginPage() {
     return teacher.nickname || teacher.firstName || teacher.name;
   };
 
-  const regularTeachers = teachers.filter((t) => t.role !== 'substitute');
+  const regularTeachers = teachers
+    .filter((t) => t.role !== 'substitute')
+    .sort((a, b) => getDisplayName(a).localeCompare(getDisplayName(b)));
 
   const handleTeacherLogin = (e) => {
     e.preventDefault();

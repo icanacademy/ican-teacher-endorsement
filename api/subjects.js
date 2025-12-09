@@ -1,7 +1,7 @@
 // Vercel Serverless Function - GET /api/subjects
 
-const NOTION_API_KEY = process.env.NOTION_API_KEY;
-const SUBJECTS_DB_ID = process.env.SUBJECTS_DB_ID;
+const NOTION_API_KEY = process.env.NOTION_API_KEY?.trim();
+const SUBJECTS_DB_ID = process.env.SUBJECTS_DB_ID?.trim();
 
 const notionHeaders = {
   'Authorization': `Bearer ${NOTION_API_KEY}`,

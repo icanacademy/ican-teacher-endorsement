@@ -1,7 +1,7 @@
 // Vercel Serverless Function - GET/POST /api/endorsements
 
-const NOTION_API_KEY = process.env.NOTION_API_KEY;
-const ENDORSEMENT_DB_ID = process.env.ENDORSEMENT_DB_ID;
+const NOTION_API_KEY = process.env.NOTION_API_KEY?.trim();
+const ENDORSEMENT_DB_ID = process.env.ENDORSEMENT_DB_ID?.trim();
 
 const notionHeaders = {
   'Authorization': `Bearer ${NOTION_API_KEY}`,

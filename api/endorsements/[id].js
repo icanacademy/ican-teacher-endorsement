@@ -1,6 +1,6 @@
 // Vercel Serverless Function - PATCH/DELETE /api/endorsements/[id]
 
-const NOTION_API_KEY = process.env.NOTION_API_KEY;
+const NOTION_API_KEY = process.env.NOTION_API_KEY?.trim();
 
 const notionHeaders = {
   'Authorization': `Bearer ${NOTION_API_KEY}`,

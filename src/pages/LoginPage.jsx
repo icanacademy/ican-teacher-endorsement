@@ -8,12 +8,9 @@ export default function LoginPage() {
   const { login, teachers, loading } = useEndorsements();
   const navigate = useNavigate();
 
-  // Helper to get display name (first + last name)
+  // Helper to get display name - prefer nickname, then first name
   const getDisplayName = (teacher) => {
-    if (teacher.firstName && teacher.lastName) {
-      return `${teacher.firstName} ${teacher.lastName}`;
-    }
-    return teacher.name;
+    return teacher.nickname || teacher.firstName || teacher.name;
   };
 
   const regularTeachers = teachers.filter((t) => t.role !== 'substitute');
